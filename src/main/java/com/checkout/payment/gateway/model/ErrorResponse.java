@@ -1,20 +1,23 @@
 package com.checkout.payment.gateway.model;
 
+import java.util.List;
+import java.util.Map;
+
 public class ErrorResponse {
-  private final String message;
+  private  String status;
 
-  public ErrorResponse(String message) {
-    this.message = message;
+  private List<Map<String,String>> errors;
+
+  public ErrorResponse(String status, List<Map<String, String>> errors) {
+    this.status = status;
+    this.errors = errors;
   }
 
-  public String getMessage() {
-    return message;
+  public String getStatus() {
+    return status;
   }
 
-  @Override
-  public String toString() {
-    return "ErrorResponse{" +
-        "message='" + message + '\'' +
-        '}';
+  public List<Map<String, String>> getErrors() {
+    return errors;
   }
 }

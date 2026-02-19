@@ -4,9 +4,7 @@ import com.checkout.payment.gateway.model.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -22,7 +20,7 @@ public class CommonExceptionHandler {
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public List<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
+  public ErrorResponse handleValidationErrors(MethodArgumentNotValidException ex) {
     List<Map<String, String>> errorList = new ArrayList<>();
     Map<String, String> errorMap = new HashMap<>();
 
@@ -33,16 +31,29 @@ public class CommonExceptionHandler {
         }
     );
 
-    return errorList;
+    return new ErrorResponse("REJECTED",errorList);
   }
 
   @ResponseStatus(HttpStatus.NOT_FOUND)
   @ExceptionHandler(PaymentNotFoundException.class)
-  public Map<String, String> handleEventProcessingError(PaymentNotFoundException ex) {
-    LOG.error("Invalid Id");
-    Map<String, String> errors = new HashMap<>();
-    errors.put("message","Page not found");
-    errors.put("error","invalid id");
-    return errors;
+  public ErrorResponse handlePaymentNotFound(PaymentNotFoundException ex) {
+    LOG.error("Invalid Id"+ex);
+    List<Map<String, String>> errorList = new ArrayList<>();
+    Map<String, String> errorMap = new HashMap<>();
+    errorMap.put("message","Page not found");
+    errorMap.put("error","invalid id");
+    errorList.add(errorMap);
+    return new ErrorResponse("PAYMENT_NOT_FOUND",errorList);
+  }
+
+  @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+  @ExceptionHandler(PaymentProcessingException.class)
+  public ErrorResponse handleEventProcessingError(PaymentProcessingException ex) {
+    LOG.error("EventProcessingException "+ex);
+    List<Map<String, String>> errorList = new ArrayList<>();
+    Map<String, String> errorMap = new HashMap<>();
+    errorMap.put("message", ex.getMessage());
+    errorList.add(errorMap);
+    return new ErrorResponse("REJECTED",errorList);
   }
 }

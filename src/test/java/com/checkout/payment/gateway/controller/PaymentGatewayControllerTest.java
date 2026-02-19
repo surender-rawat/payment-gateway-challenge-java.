@@ -59,7 +59,7 @@ class PaymentGatewayControllerTest {
     when(paymentGatewayService.getPaymentById(any())).thenThrow(PaymentNotFoundException.class);
     mvc.perform(MockMvcRequestBuilders.get("/api/payments/" + UUID.randomUUID()))
         .andExpect(status().isNotFound())
-        .andExpect(jsonPath("$.message").value("Page not found"));
+        .andExpect(jsonPath("$.errors.[*].message").value("Page not found"));
   }
 
   @Test
@@ -79,9 +79,9 @@ class PaymentGatewayControllerTest {
             .header("Idempotency-Key", UUID.randomUUID())
             .content(json))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.[*].field")
+        .andExpect(jsonPath("$.errors.[*].field")
             .value(org.hamcrest.Matchers.hasItem("cardNumber")))
-        .andExpect(jsonPath("$.[*].message")
+        .andExpect(jsonPath("$.errors.[*].message")
             .value(org.hamcrest.Matchers.hasItem("Card number is required")));
   }
 
@@ -103,9 +103,9 @@ class PaymentGatewayControllerTest {
             .header("Idempotency-Key", UUID.randomUUID())
             .content(json))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.[*].field")
+        .andExpect(jsonPath("$.errors.[*].field")
             .value(org.hamcrest.Matchers.hasItem("cardNumber")))
-        .andExpect(jsonPath("$.[*].message")
+        .andExpect(jsonPath("$.errors.[*].message")
             .value(org.hamcrest.Matchers.hasItem("Card number must be between 14 and 19 digits")));
   }
 
@@ -127,9 +127,9 @@ class PaymentGatewayControllerTest {
             .header("Idempotency-Key", UUID.randomUUID())
             .content(json))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.[*].field")
+        .andExpect(jsonPath("$.errors.[*].field")
             .value(org.hamcrest.Matchers.hasItem("cardNumber")))
-        .andExpect(jsonPath("$.[*].message")
+        .andExpect(jsonPath("$.errors.[*].message")
             .value(
                 org.hamcrest.Matchers.hasItem("Card number must contain only numeric characters")));
   }
@@ -151,9 +151,9 @@ class PaymentGatewayControllerTest {
             .header("Idempotency-Key", UUID.randomUUID())
             .content(json))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.[*].field")
+        .andExpect(jsonPath("$.errors.[*].field")
             .value(org.hamcrest.Matchers.hasItem("expiryMonth")))
-        .andExpect(jsonPath("$.[*].message")
+        .andExpect(jsonPath("$.errors.[*].message")
             .value(org.hamcrest.Matchers.hasItem("Expiry month is required")));
   }
 
@@ -175,9 +175,9 @@ class PaymentGatewayControllerTest {
             .header("Idempotency-Key", UUID.randomUUID())
             .content(json))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.[*].field")
+        .andExpect(jsonPath("$.errors.[*].field")
             .value(org.hamcrest.Matchers.hasItem("expiryMonth")))
-        .andExpect(jsonPath("$.[*].message")
+        .andExpect(jsonPath("$.errors.[*].message")
             .value(org.hamcrest.Matchers.hasItem("Expiry month must be between 1 and 12")));
   }
 
@@ -199,9 +199,9 @@ class PaymentGatewayControllerTest {
             .header("Idempotency-Key", UUID.randomUUID())
             .content(json))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.[*].field")
+        .andExpect(jsonPath("$.errors.[*].field")
             .value(org.hamcrest.Matchers.hasItem("expiryDateValid")))
-        .andExpect(jsonPath("$.[*].message")
+        .andExpect(jsonPath("$.errors.[*].message")
             .value(org.hamcrest.Matchers.hasItem("Expiry date must be in the future")));
   }
 
@@ -223,9 +223,9 @@ class PaymentGatewayControllerTest {
             .header("Idempotency-Key", UUID.randomUUID())
             .content(json))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.[*].field")
+        .andExpect(jsonPath("$.errors.[*].field")
             .value(org.hamcrest.Matchers.hasItem("currency")))
-        .andExpect(jsonPath("$.[*].message")
+        .andExpect(jsonPath("$.errors.[*].message")
             .value(org.hamcrest.Matchers.hasItem("Currency must be one of: USD, GBP, EUR")));
   }
 
@@ -247,9 +247,9 @@ class PaymentGatewayControllerTest {
             .header("Idempotency-Key", UUID.randomUUID())
             .content(json))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.[*].field")
+        .andExpect(jsonPath("$.errors.[*].field")
             .value(org.hamcrest.Matchers.hasItem("amount")))
-        .andExpect(jsonPath("$.[*].message")
+        .andExpect(jsonPath("$.errors.[*].message")
             .value(org.hamcrest.Matchers.hasItem("Amount must be a positive integer")));
   }
 
@@ -271,9 +271,9 @@ class PaymentGatewayControllerTest {
             .header("Idempotency-Key", UUID.randomUUID())
             .content(json))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.[*].field")
+        .andExpect(jsonPath("$.errors.[*].field")
             .value(org.hamcrest.Matchers.hasItem("cvv")))
-        .andExpect(jsonPath("$.[*].message")
+        .andExpect(jsonPath("$.errors.[*].message")
             .value(org.hamcrest.Matchers.hasItem("CVV must contain only numeric characters")));
   }
 
@@ -295,9 +295,9 @@ class PaymentGatewayControllerTest {
             .header("Idempotency-Key", UUID.randomUUID())
             .content(json))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.[*].field")
+        .andExpect(jsonPath("$.errors.[*].field")
             .value(org.hamcrest.Matchers.hasItem("cvv")))
-        .andExpect(jsonPath("$.[*].message")
+        .andExpect(jsonPath("$.errors.[*].message")
             .value(org.hamcrest.Matchers.hasItem("CVV must be 3 or 4 digits")));
   }
 

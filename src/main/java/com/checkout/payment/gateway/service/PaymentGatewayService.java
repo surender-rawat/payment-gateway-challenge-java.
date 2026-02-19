@@ -4,8 +4,8 @@ import static java.lang.String.valueOf;
 
 import com.checkout.payment.gateway.client.AcquiringBankClient;
 import com.checkout.payment.gateway.enums.PaymentStatus;
-import com.checkout.payment.gateway.exception.EventProcessingException;
 import com.checkout.payment.gateway.exception.PaymentNotFoundException;
+import com.checkout.payment.gateway.exception.PaymentProcessingException;
 import com.checkout.payment.gateway.model.AcquiringBankRequest;
 import com.checkout.payment.gateway.model.AcquiringBankResponse;
 import com.checkout.payment.gateway.model.Payment;
@@ -46,7 +46,7 @@ public class PaymentGatewayService {
       LOG.info("acquiringBankResponse " + acquiringBankResponse);
     } catch (Exception e) {
       LOG.error("Error while processing upstream payment", e);
-      throw new EventProcessingException("Error while processing payment");
+      throw new PaymentProcessingException("Error while processing payment");
     }
     paymentRequest.updateAuthorizationCode(
         acquiringBankResponse.getAuthorizationCode());

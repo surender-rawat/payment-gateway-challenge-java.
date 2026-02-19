@@ -2,7 +2,7 @@ package com.checkout.payment.gateway.service;
 
 import com.checkout.payment.gateway.client.AcquiringBankClient;
 import com.checkout.payment.gateway.enums.PaymentStatus;
-import com.checkout.payment.gateway.exception.EventProcessingException;
+import com.checkout.payment.gateway.exception.PaymentProcessingException;
 import com.checkout.payment.gateway.exception.PaymentNotFoundException;
 import com.checkout.payment.gateway.model.AcquiringBankResponse;
 import com.checkout.payment.gateway.model.Payment;
@@ -117,7 +117,7 @@ public class PaymentGatewayServiceTest {
         .thenThrow(new RuntimeException("Upstream error"));
 
     assertThatThrownBy(() -> paymentGatewayService.processPayment(payment))
-        .isInstanceOf(EventProcessingException.class)
+        .isInstanceOf(PaymentProcessingException.class)
         .hasMessage("Error while processing payment");
 
     // still stored once as SUBMITTED before calling acquirer
